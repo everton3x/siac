@@ -24,10 +24,10 @@ class CSVWriter implements WriterInterface {
 
     public function create() {
         if (file_exists($this->path)) {
-//            throw new Exception(sprintf('O diretório %s já existe.', $this->path));
+            throw new Exception(sprintf('O diretório %s já existe.', $this->path));
         }
         if (@mkdir($this->path, 0777, true) === false) {
-//            throw new Exception(sprintf('Falha ao criar o diretório %s.', $this->path));
+            throw new Exception(sprintf('Falha ao criar o diretório %s.', $this->path));
         }
     }
 

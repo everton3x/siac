@@ -44,10 +44,11 @@ class PadConvertCommand extends Command
                 throw new InvalidArgumentException("Destino inválido.");
             }
             if ($argOrigin) {
-                $io->note('Origens:');
-                foreach ($argOrigin as $origin) {
-                    $io->note(sprintf("\t-> %s", $origin));
-                }
+//                $io->note('Origens:');
+//                foreach ($argOrigin as $origin) {
+//                    $io->note(sprintf("\t-> %s", $origin));
+//                }
+                $io->note(join(PHP_EOL, array_merge(['Origens:'], $argOrigin)));
             }else{
                 throw new InvalidArgumentException("Origem inválida.");
             }

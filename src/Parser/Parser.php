@@ -74,6 +74,7 @@ class Parser {
 
     protected function processFileReader(FileReader $freader) {
         try {
+            $this->progressbar->setMessage(str_pad($freader->getBaseName(), 20, ' ', STR_PAD_RIGHT));
             if (!is_null($freader->getSpec())) {//processa o arquivo apenas se tiver especificação
                 $this->writer->prepare($freader);
                 $spec = $freader->getSpec();
