@@ -90,8 +90,66 @@ class CSVWriter implements WriterInterface {
         //não faz nada
     }
 
-    public function saveMetaData(string $filePath, string $baseName, string $cnpj, DateTime $initialDate, DateTime $finalDate, DateTime $generationDate, string $entityName, int $totalRows) {
-        
+    public function saveMetaData(
+            string $filePath,
+            string $baseName,
+            string $cnpj,
+            DateTime $initialDate,
+            DateTime $finalDate,
+            DateTime $generationDate,
+            string $entityName,
+            int $totalRows
+    ) {
+        try {
+            $fmeta = "{$this->path}/meta.csv";
+
+            if (!file_exists($fmeta)) {
+                $header = [
+                    'id',
+                    'arquivo',
+                    'cnpj',
+                    'data_inicial',
+                    'data_final',
+                    'data_geracao',
+                    'entidade',
+                    'registros'
+                ];
+            } else {
+                $header = false;
+            }
+
+            if (($fhandle = fopen($fmeta, 'a')) === false) {
+                throw new Exception(sprintf('Não foi possível criar %s', $fmeta));
+            }
+
+
+            if ($header) {
+                if (fputcsv($fhandle, $header, ';') == false) {
+                    throw new Exception(sprintf('Falha ao salvar cabeçalho de %s para meta.csv em %s', $baseName, $this->path));
+                }
+            }
+
+            $meta = [
+                $baseName,
+                $filePath,
+                $cnpj,
+                $initialDate->format('d/m/Y'),
+                $finalDate->format('d/m/Y'),
+                $generationDate->format('d/m/Y'),
+                $entityName,
+                $totalRows
+            ];
+
+            if (fputcsv($fhandle, $meta, ';') == false) {
+                throw new Exception(sprintf('Falha ao salvar dados de %s para meta.csv em %s', $baseName, $this->path));
+            }
+
+            if (fclose($fhandle) === false) {
+                throw new Exception(sprintf('Falha ao fechar meta.csv em %s', $this->path));
+            }
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 
 }

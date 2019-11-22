@@ -115,7 +115,7 @@ class FileReader {
         return $this->generationDate;
     }
 
-    public function getInitialDAte(): DateTime {
+    public function getInitialDate(): DateTime {
         return $this->initalDate;
     }
 
@@ -134,6 +134,10 @@ class FileReader {
 
     public function getTotalRows(): int {
         return $this->totalRows;
+    }
+    
+    public function getFilePath(): string {
+        return $this->path;
     }
 
     public function readLine(): string {

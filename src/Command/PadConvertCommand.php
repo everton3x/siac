@@ -11,7 +11,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 class PadConvertCommand extends Command
 {
@@ -55,6 +57,18 @@ class PadConvertCommand extends Command
 
             /* Futuramente será possível escolher um caminho com as especificações de conversão */
             $optSpecDir = 'spec/';
+            
+            /* verifica se o destino já existe */
+            if(file_exists($argDestiny)){
+                $qhelper = $this->getHelper('question');
+                $question = new ConfirmationQuestion("$argDestiny já existe. Deseja excluir? [S,n]", true, '/^s/i');
+                if($qhelper->ask($input, $output, $question)){
+                    $fs = new Filesystem();
+                    $fs->remove($argDestiny);
+                }else{
+                    throw new Exception("O destino $argDestiny já existe.");
+                }
+            }
             
             /* Instancia o Reader */
             $reader = new Reader($argOrigin, $optSpecDir);

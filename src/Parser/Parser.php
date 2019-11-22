@@ -74,7 +74,24 @@ class Parser {
 
     protected function processFileReader(FileReader $freader) {
         try {
-            $this->progressbar->setMessage(str_pad($freader->getBaseName(), 20, ' ', STR_PAD_RIGHT));
+
+            try {
+                $this->progressbar->setMessage(str_pad($freader->getBaseName(), 20, ' ', STR_PAD_RIGHT));
+                
+                $this->writer->saveMetaData(
+                        $freader->getFilePath(),
+                        $freader->getBaseName(),
+                        $freader->getCNPJ(),
+                        $freader->getInitialDate(),
+                        $freader->getFinalDate(),
+                        $freader->getGenerationDate(),
+                        $freader->getEntityName(),
+                        $freader->getTotalRows()
+                );
+            } catch (Exception $ex) {
+                throw $ex;
+            }
+
             if (!is_null($freader->getSpec())) {//processa o arquivo apenas se tiver especificação
                 $this->writer->prepare($freader);
                 $spec = $freader->getSpec();
@@ -100,7 +117,7 @@ class Parser {
                 $start = $fieldSpec['start'];
                 $size = $fieldSpec['size'];
                 $transform = $fieldSpec['transform'];
-                $start--;//necessário porque no php o primeiro caractere é 0
+                $start--; //necessário porque no php o primeiro caractere é 0
                 $value = substr($line, $start, $size);
                 if ($transform) {
                     $value = $transform($value);
