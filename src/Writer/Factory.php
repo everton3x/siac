@@ -24,8 +24,9 @@ class Factory {
                 case 'CSV':
                     return new CSVWriter($destiny);
                     break;
-//                case 'DB':
-//                    break;
+                case 'DB':
+                    return new SQLiteWriter($destiny);
+                    break;
                 default :
                     throw new InvalidArgumentException(sprintf('Não há suporte para o formato de destino %s', $ext));
             }

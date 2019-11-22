@@ -16,7 +16,7 @@ class CSVWriter implements WriterInterface {
 
     protected $path = '';
     protected $fhandle = null;
-    protected $freader = '';
+    protected $freader = null;
 
     public function __construct($destiny) {
         $this->path = $destiny;
