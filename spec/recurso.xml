@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cpad id="recurso" linesize="244">
+    <field id="cod" type="int" start="1" size="4" transform=""></field>
+    <field id="nome" type="string" start="5" size="80" transform="trim"></field>
+    <field id="finalidade" type="string" start="85" size="160" transform="trim"></field>
+</cpad>

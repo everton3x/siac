@@ -1,11 +1,15 @@
 <?php
 
 function valor_com_sinal(string $data): float {
-    $sinal = (int) substr($data, -1, 1);
+    $sinal = (string) substr($data, strlen($data) - 1, 1);
+//    echo $sinal;exit();
 //    $inteiro = (int) substr($data, 0, strlen($data) - 3);
-    $modulo = (int) substr($data, 0, strlen($data) - 2);
+    $modulo = (int) substr($data, 0, strlen($data) - 1);
+//    echo $modulo;exit();
 //    $decimal = (int) substr($data, strlen($data)-3, strlen($data)-1);
-    return (float) ($sinal . round($modulo / 2, 2));
+    $result = ($sinal . round($modulo / 100, 2));
+//    echo $result;exit();
+    return (float) $result;
 }
 
 function valor_sem_sinal(string $data): float {

@@ -16,4 +16,5 @@
     <field id="nr_nf" type="int" start="697" size="9" transform=""></field>
     <field id="serie_nf" type="string" start="706" size="3" transform=""></field>
     <field id="tipo_contrato" type="string" start="709" size="1" transform=""></field>
+    <field id="ano_empenho" type="int" start="1" size="5" transform=""></field>
 </cpad>

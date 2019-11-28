@@ -15,4 +15,5 @@
     <field id="uniorcam_credito" type="int" start="250" size="4" transform=""></field>
     <field id="historico" type="text" start="254" size="400" transform="trim"></field>
     <field id="nr_liquidac" type="string" start="654" size="20" transform=""></field>
+    <field id="ano_empenho" type="int" start="1" size="5" transform=""></field>
 </cpad>

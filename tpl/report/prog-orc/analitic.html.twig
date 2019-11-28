@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Avaliação da Programação Orçamentária e Financeira</title>
+        <link rel="stylesheet" type="text/css" href="vendor/semantic/ui/dist/semantic.min.css">
+    </head>
+    <body>
+        <div class="ui container">
+            <div class="ui medium header">
+                Avaliação da Programação Orçamentária e Financeira
+                <div class="ui sub header">Data-base: {{ dataBase|date("d/m/Y") }}</div>
+            </div>
+            <div class="ui small header">Entidades incluídas</div>
+            <div class="ui list">
+                {% for entidade in entidades %}
+                    <div class="item">{{ entidade.nome }}</div>
+                {% endfor %}
+            </div>
+
+            <table class="ui celled striped table">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">Fonte</th>
+                        <th style="text-align: center">
+                            <p>Saldo Financeiro</p>
+                            <p>A</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>A Arrecadar</p>
+                            <p>B</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Disponível</p>
+                            <p>C = A+B</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>A Empenhar</p>
+                            <p>D</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Limitado</p>
+                            <p>E</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Recomposto</p>
+                            <p>F</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>A Liquidar</p>
+                            <p>G</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>A Pagar</p>
+                            <p>H</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Restos a Pagar</p>
+                            <p>I</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Extras a Pagar</p>
+                            <p>J</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Dispêndios</p>
+                            <p>K = D-E+F+G+H+I+J</p>
+                        </th>
+                        <th style="text-align: center">
+                            <p>Saldo Final</p>
+                            <p>L = C-K</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set totalSaldoFinanceiro = 0 %}
+                    {% set totalAArrecadar = 0 %}
+                    {% set totalDisponivel = 0 %}
+                    {% set totalAEmpenhar = 0 %}
+                    {% set totalLimitado = 0 %}
+                    {% set totalRecomposto = 0 %}
+                    {% set totalALiquidar = 0 %}
+                    {% set totalAPagar = 0 %}
+                    {% set totalRestosAPagar = 0 %}
+                    {% set totalExtraAPagar = 0 %}
+                    {% set totalDispendio = 0 %}
+                    {% set totalSaldoFinal = 0 %}
+
+                    {%  for item in dados %}
+                        {% set disponivel = item.saldoFinanceiro + item.aArrecadar %}
+                        {% set dispendio = item.aEmpenhar - item.limitado + item.recomposto + item.aLiquidar + item.aPagar + item.restosAPagar + item.extraAPagar %}
+                        {% set saldoFinal = disponivel - dispendio %}
+
+                        {% set totalSaldoFinanceiro = totalSaldoFinanceiro + item.saldoFinanceiro %}
+                        {% set totalAArrecadar = totalAArrecadar + item.aArrecadar %}
+                        {% set totalDisponivel = totalDisponivel + disponivel %}
+                        {% set totalAEmpenhar = totalAEmpenhar + item.aEmpenhar %}
+                        {% set totalLimitado = totalLimitado + item.limitado %}
+                        {% set totalRecomposto = totalRecomposto + item.recomposto %}
+                        {% set totalALiquidar = totalALiquidar + item.aLiquidar %}
+                        {% set totalAPagar = totalAPagar + item.aPagar %}
+                        {% set totalRestosAPagar = totalRestosAPagar + item.restosAPagar%}
+                        {% set totalExtraAPagar = totalExtraAPagar + item.extraAPagar %}
+                        {% set totalDispendio = totalDispendio + dispendio %}
+                        {% set totalSaldoFinal = totalSaldoFinal + saldoFinal %}
+                        <tr>
+                            <td style="text-align: right">{{ item.rv }}</td>
+                            <td style="text-align: right">{{ item.saldoFinanceiro|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.aArrecadar|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ disponivel|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.aEmpenhar|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.limitado|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.recomposto|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.aLiquidar|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.aPagar|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.restosAPagar|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ item.extraAPagar|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{dispendio|number_format(2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ saldoFinal|number_format(2, ',', '.') }}</td>
+                        </tr>
+                    {%  endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td style="text-align: right">{{ totalSaldoFinanceiro|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalAArrecadar|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalDisponivel|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalAEmpenhar|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalLimitado|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalRecomposto|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalALiquidar|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalAPagar|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalRestosAPagar|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalExtraAPagar|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalDispendio|number_format(2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ totalSaldoFinal|number_format(2, ',', '.') }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="ui message">
+                <p>Considerando que as fontes de recursos vinculados com saldo final negativo (deficit) devem ser cobertas com a fonte de recursos 0001 Livre, após a cobertura o recurso 0001 Livre apresenta estimativa de:</p>
+                {% if saldoLivre < 0 %}
+                    <p>Deficit no valor de R$ {{ saldoLivre|number_format(2, ',', '.') }}</p>
+                {% else %}
+                    <p>Superavit no valor de R$ {{ saldoLivre|number_format(2, ',', '.') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>
