@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Writer;
+namespace App\Pad\Convert\Writer;
 
-use App\Reader\FileReader;
+use App\Pad\Convert\Reader\FileReader;
 use DateTime;
 
 /**

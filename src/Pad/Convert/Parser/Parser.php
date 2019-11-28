@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Parser;
+namespace App\Pad\Convert\Parser;
 
-use App\Reader\FileReader;
-use App\Reader\Reader;
-use App\Reader\SpecReader;
-use App\Writer\WriterInterface;
+use App\Pad\Convert\Reader\FileReader;
+use App\Pad\Convert\Reader\Reader;
+use App\Pad\Convert\Reader\SpecReader;
+use App\Pad\Convert\Writer\WriterInterface;
 use Exception;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;

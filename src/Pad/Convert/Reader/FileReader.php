@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Reader;
+namespace App\Pad\Convert\Reader;
 
 use DateTime;
 use Exception;

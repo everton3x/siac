@@ -2,9 +2,9 @@
 
 namespace App\Command;
 
-use App\Parser\Parser;
-use App\Reader\Reader;
-use App\Writer\Factory;
+use App\Pad\Convert\Parser\Parser;
+use App\Pad\Convert\Reader\Reader;
+use App\Pad\Convert\Writer\Factory;
 use InvalidArgumentException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;

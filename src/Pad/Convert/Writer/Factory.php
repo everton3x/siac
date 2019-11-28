@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Writer;
+namespace App\Pad\Convert\Writer;
 
 use Exception;
 use InvalidArgumentException;
