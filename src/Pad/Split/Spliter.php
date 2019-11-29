@@ -77,11 +77,11 @@ class Spliter {
 
             /* separa dados da câmara */
             $this->io->note(sprintf('Segregando dados da Câmara para %s ...', $this->saveDir . 'cm.db'));
-            $this->splitCMandRPPS($this->saveDir . 'cm.db', $this->config['UniOrcamEntidades']['cm']);
+            $this->splitCM($this->saveDir . 'cm.db');
 
             /* separa dados do rpps */
             $this->io->note(sprintf('Segregando dados do RPPS para %s ...', $this->saveDir . 'rpps.db'));
-            $this->splitCMandRPPS($this->saveDir . 'rpps.db', $this->config['UniOrcamEntidades']['rpps']);
+            $this->splitRPPS($this->saveDir . 'rpps.db');
 
             /* separa dados do executivo */
             $this->io->note(sprintf('Segregando dados da Prefeitura para %s ...', $this->saveDir . 'pm.db'));
@@ -96,7 +96,7 @@ class Spliter {
         }
     }
 
-    protected function splitCMandRPPS(string $foutput, int $uniorcam) {
+    protected function splitCM(string $foutput) {
         try {
             if (!copy($this->dbTemp, $foutput)) {
                 throw new Exception(sprintf("Não foi possível copiar %s para %s", $this->dbTemp, $foutput));
@@ -104,9 +104,54 @@ class Spliter {
 
             $this->connect($foutput);
 
+            $uniorcam = $this->config['UniOrcamEntidades']['cm'];
+            $cnpj = $this->config['CnpjEntidades']['cm'];
             
             $this->pdo->exec("DELETE FROM liquidac WHERE nr_empenho IN (SELECT nr_empenho FROM empenho WHERE uniorcam <> $uniorcam GROUP BY nr_empenho)");
             $this->pdo->exec("DELETE FROM pagament WHERE nr_empenho IN (SELECT nr_empenho FROM empenho WHERE uniorcam <> $uniorcam GROUP BY nr_empenho)");
+            
+            $this->pdo->exec("DELETE FROM meta WHERE cnpj NOT LIKE '$cnpj'");
+
+            $set = [
+                'bal_desp' => 'uniorcam',
+                'bal_rec' => 'uniorcam',
+                'bal_ver' => 'uniorcam',
+                'brec_ant' => 'uniorcam',
+                'brub_ant' => 'uniorcam',
+                'cta_disp' => 'uniorcam',
+                'empenho' => 'uniorcam',
+                'receita' => 'uniorcam',
+                'tce_4111' => 'uniorcam'
+            ];
+
+            foreach ($set as $table => $field) {
+                $this->pdo->exec("DELETE FROM $table WHERE $field <> $uniorcam");
+            }
+        } catch (Exception $ex) {
+            if (!unlink($foutput)) {
+                throw new Exception(sprintf("Não foi possível apagar %s", $foutput));
+            }
+            throw $ex;
+        }
+    }
+    
+    protected function splitRPPS(string $foutput) {
+        try {
+            if (!copy($this->dbTemp, $foutput)) {
+                throw new Exception(sprintf("Não foi possível copiar %s para %s", $this->dbTemp, $foutput));
+            }
+
+            $this->connect($foutput);
+
+            $uniorcam = $this->config['UniOrcamEntidades']['rpps'];
+            $cnpj = $this->config['CnpjEntidades']['rpps'];
+            $cnpjPM = $this->config['CnpjEntidades']['pm'];
+            
+            $this->pdo->exec("DELETE FROM liquidac WHERE nr_empenho IN (SELECT nr_empenho FROM empenho WHERE uniorcam <> $uniorcam GROUP BY nr_empenho)");
+            $this->pdo->exec("DELETE FROM pagament WHERE nr_empenho IN (SELECT nr_empenho FROM empenho WHERE uniorcam <> $uniorcam GROUP BY nr_empenho)");
+            
+            $this->pdo->exec("UPDATE meta SET cnpj  = '$cnpj', entidade = 'RPPS' WHERE cnpj LIKE '$cnpjPM'");
+            $this->pdo->exec("DELETE FROM meta WHERE cnpj NOT LIKE '$cnpj'");
 
             $set = [
                 'bal_desp' => 'uniorcam',
@@ -138,6 +183,9 @@ class Spliter {
             }
             
             $this->connect($foutput);
+            
+            $cnpj = $this->config['CnpjEntidades']['pm'];
+            $this->pdo->exec("DELETE FROM meta WHERE cnpj NOT LIKE '$cnpj'");
             
             $this->pdo->exec("DELETE FROM liquidac WHERE nr_empenho IN (SELECT nr_empenho FROM empenho WHERE uniorcam = $uniorcamCM GROUP BY nr_empenho)");
             $this->pdo->exec("DELETE FROM liquidac WHERE nr_empenho IN (SELECT nr_empenho FROM empenho WHERE uniorcam = $uniorcamRPPS GROUP BY nr_empenho)");
