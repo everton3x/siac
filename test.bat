@@ -9,4 +9,7 @@ rem php .\siac.php pad:convert --carregar
 rem php .\siac.php prog-orc:calc "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db" "C:\Users\everton.INDEPENDENCIA\Desktop\progorc.pdf"
 
 rem php .\siac.php pad:split "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db" --saveTo="C:\Users\everton.INDEPENDENCIA\Documents\Prefeitura\2019\PAD\2019-10\"
-php .\siac.php pad:split "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db"
+rem php .\siac.php pad:split "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db"
+
+rem php .\siac.php vale-alim:calc "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db"
+php .\siac.php vale-alim:calc "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --report="C:\Users\everton.INDEPENDENCIA\Desktop\vale.pdf"

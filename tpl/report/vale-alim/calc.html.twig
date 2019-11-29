@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Estimativa da suficiência/insuficiência de dotação (vale-alimentação)</title>
+        <link rel="stylesheet" type="text/css" href="vendor/semantic/ui/dist/semantic.min.css">
+    </head>
+    <body>
+        <div class="ui container">
+            <div class="ui medium header">
+                Estimativa da suficiência/insuficiência de dotação (vale-alimentação)
+                <div class="ui sub header">Data-base: {{ dataBase|date("d/m/Y") }}</div>
+            </div>
+            <div class="ui small header">Entidades incluídas</div>
+            <div class="ui list">
+                {% for entidade in entidades %}
+                    <div class="item">{{ entidade }}</div>
+                {% endfor %}
+            </div>
+
+            <table class="ui celled striped table">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">Item</th>
+                        <th style="text-align: center">
+                            <p>Valor</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                            <td style="text-align: left">Dotação atualizada</td>
+                            <td style="text-align: right">{{ dotacao|number_format(2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Empenhado até a data-base</td>
+                            <td style="text-align: right">{{ empenhado|number_format(2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Saldo da dotação</td>
+                            <td style="text-align: right">{{ saldo|number_format(2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Meses empenhados</td>
+                            <td style="text-align: right">{{ mesesEmpenhados }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Média mensal empenhada</td>
+                            <td style="text-align: right">{{ media|number_format(2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Meses a empenhar</td>
+                            <td style="text-align: right">{{ mesesAEmpenhar }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Valor a empenhar</td>
+                            <td style="text-align: right">{{ valorAEmpenhar|number_format(2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left">Suficiência/Insuficiência de dotação</td>
+                            <td style="text-align: right">{{ resultado|number_format(2, ',', '.') }}</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
