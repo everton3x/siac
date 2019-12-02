@@ -23,7 +23,7 @@ class PessoalDotacaoCommand extends Command {
 
     protected function configure() {
         $this
-                ->setDescription('Add a short description for your command')
+                ->setDescription('Calcula o superavit/deficit da dotação de pessoal.')
                 ->addArgument('db', InputArgument::REQUIRED, 'Caminho para o arquivo */.db com os dados do PAD.')
                 ->addOption('report', null, InputOption::VALUE_REQUIRED, 'Se fornecido, é o caminho para salvar o relatório em PDF.')
         ;
