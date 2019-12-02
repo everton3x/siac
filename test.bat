@@ -12,4 +12,7 @@ rem php .\siac.php pad:split "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db" --
 rem php .\siac.php pad:split "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db"
 
 rem php .\siac.php vale-alim:calc "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db"
-php .\siac.php vale-alim:calc "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --report="C:\Users\everton.INDEPENDENCIA\Desktop\vale.pdf"
+rem php .\siac.php vale-alim:calc "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --report="C:\Users\everton.INDEPENDENCIA\Desktop\vale.pdf"
+
+rem php .\siac.php pessoal:dotacao "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db"
+php .\siac.php pessoal:dotacao "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --report="C:\Users\everton.INDEPENDENCIA\Desktop\folha.pdf"

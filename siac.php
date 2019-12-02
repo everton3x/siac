@@ -1,9 +1,10 @@
 <?php
 
 use App\Command\CalcProgOrcCommand;
-use App\Command\ValeCalcCommand;
 use App\Command\PadConvertCommand;
 use App\Command\PadSplitCommand;
+use App\Command\PessoalDotacaoCommand;
+use App\Command\ValeCalcCommand;
 use Symfony\Component\Console\Application;
 
 require 'vendor/autoload.php';
@@ -14,7 +15,8 @@ $application->addCommands([
     new PadConvertCommand(),
     new CalcProgOrcCommand(),
     new PadSplitCommand(),
-    new ValeCalcCommand()
+    new ValeCalcCommand(),
+    new PessoalDotacaoCommand()
 ]);
 
 $application->run();

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Estimativa da suficiência/insuficiência de dotação (folha)</title>
+        <link rel="stylesheet" type="text/css" href="vendor/semantic/ui/dist/semantic.min.css">
+    </head>
+    <body>
+        <div class="ui container">
+            <div class="ui medium header">
+                Estimativa da suficiência/insuficiência de dotação (folha/pessoal)
+                <div class="ui sub header">Data-base: {{ dataBase|date("d/m/Y") }}</div>
+            </div>
+            <div class="ui small header">Entidades incluídas</div>
+            <div class="ui list">
+                {% for entidade in entidades %}
+                    <div class="item">{{ entidade }}</div>
+                {% endfor %}
+            </div>
+
+            <table class="ui celled striped table">
+                <caption>Metodologia: média mensal empenhada</caption>
+                <thead>
+                    <tr>
+                        <th style="text-align: center">Item</th>
+                        <th style="text-align: center">
+                            <p>Valor</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left">Dotação atualizada</td>
+                        <td style="text-align: right">{{ media.dotacaoAtualizada|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Reserva para suplementar dotação diferente</td>
+                        <td style="text-align: right">{{ media.reserva|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Despesas deduzidas</td>
+                        <td style="text-align: right">{{ media.dotAtualizDeducoes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(=) Dotação líquida</td>
+                        <td style="text-align: right">{{ media.dotacaoLiquida|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Empenhado até o mês</td>
+                        <td style="text-align: right">{{ media.empenhadoAteMes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Despesas deduzidas</td>
+                        <td style="text-align: right">{{ media.empenhadoAteMesDeducoes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(=) Empenhado líquido</td>
+                        <td style="text-align: right">{{ media.empenhadoLiquido|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Meses empenhados</td>
+                        <td style="text-align: right">{{ media.mesesEmpenhados }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Média mensal empenhada</td>
+                        <td style="text-align: right">{{ media.mediaMensal|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Meses a empenhar</td>
+                        <td style="text-align: right">{{ media.mesesAEmpenharMedia }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Valor a empenhar</td>
+                        <td style="text-align: right">{{ media.valorAEmpenharMedia|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Superavit/deficit da dotação</td>
+                        <td style="text-align: right">{{ media.resultadoMedia|number_format(2, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="ui celled striped table">
+                <caption>Metodologia: último mês empenhado</caption>
+                <thead>
+                    <tr>
+                        <th style="text-align: center">Item</th>
+                        <th style="text-align: center">
+                            <p>Valor</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left">Dotação atualizada</td>
+                        <td style="text-align: right">{{ ultimo.dotacaoAtualizada|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Reserva para suplementar dotação diferente</td>
+                        <td style="text-align: right">{{ ultimo.reserva|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Despesas deduzidas</td>
+                        <td style="text-align: right">{{ ultimo.dotAtualizDeducoes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(=) Dotação líquida</td>
+                        <td style="text-align: right">{{ ultimo.dotacaoLiquida|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Empenhado até o mês</td>
+                        <td style="text-align: right">{{ ultimo.empenhadoAteMes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Despesas deduzidas</td>
+                        <td style="text-align: right">{{ ultimo.empenhadoAteMesDeducoes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(=) Empenhado líquido</td>
+                        <td style="text-align: right">{{ ultimo.empenhadoLiquido|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Empenhado no último mês</td>
+                        <td style="text-align: right">{{ ultimo.empenhadoUltimoMes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(-) Deduções empenhadas no último mês</td>
+                        <td style="text-align: right">{{ ultimo.empenhadoUltimoMesDeducoes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">(=) Empenhado líquido no último mês</td>
+                        <td style="text-align: right">{{ ultimo.empenhadoUltimoMesLiquido|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Meses a empenhar</td>
+                        <td style="text-align: right">{{ ultimo.mesesAEmpenhar }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Valor a empenhar</td>
+                        <td style="text-align: right">{{ ultimo.valorAEmpenharUltimoMes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Superavit/deficit da dotação</td>
+                        <td style="text-align: right">{{ ultimo.resultadoUltimoMes|number_format(2, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+    
+</html>
