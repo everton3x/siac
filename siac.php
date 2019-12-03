@@ -1,6 +1,9 @@
 <?php
 
 use App\Command\CalcProgOrcCommand;
+use App\Command\ContestNewProfileCommand;
+use App\Command\ContestNewRuleCommand;
+use App\Command\ContestRunCommand;
 use App\Command\PadConvertCommand;
 use App\Command\PadSplitCommand;
 use App\Command\PessoalDotacaoCommand;
@@ -16,7 +19,10 @@ $application->addCommands([
     new CalcProgOrcCommand(),
     new PadSplitCommand(),
     new ValeCalcCommand(),
-    new PessoalDotacaoCommand()
+    new PessoalDotacaoCommand(),
+    new ContestNewRuleCommand(),
+    new ContestNewProfileCommand(),
+    new ContestRunCommand()
 ]);
 
 $application->run();
