@@ -63,7 +63,9 @@ class ContestRunCommand extends Command {
                     throw new Exception("Falha ao tentar abrir o perfil $profile de $fprofile");
                 }
                 foreach ($rules as $rule) {
-                    $result[$rule] = $tester->run($rule);
+                    if (substr($rule, 0, 1) !== ';') {
+                        $result[$rule] = $tester->run($rule);
+                    }
                 }
             } else {
                 throw new Exception('É necessário informar uma regra (--rule=nome_da_regra) ou perfil (--profile=nome_do_perfil).');
