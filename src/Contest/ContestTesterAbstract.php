@@ -96,5 +96,21 @@ abstract class ContestTesterAbstract {
             throw $ex;
         }
     }
+    
+    public static function getRules(): array {
+        try{
+            $result = [];
+            $it = new \DirectoryIterator(self::getRuleDir());
+            foreach ($it as $item){
+//                echo $item->getPathname(), PHP_EOL;
+                if($item->isFile()){
+                    $result[] = $item->getBasename(".{$item->getExtension()}");
+                }
+            }
+            return $result;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
 
 }
