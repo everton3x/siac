@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Contest\ContestTesterAbstract;
 use App\Contest\RuleTester;
 use Exception;
 use Mpdf\HTMLParserMode;
@@ -47,8 +48,8 @@ class ContestRunCommand extends Command {
 
             /* executa o testador adequado */
             $result = [];
+            $tester = new RuleTester($db);
             if ($rule) {
-                $tester = new RuleTester($db);
                 $testResult = $tester->run($rule);
                 if ($testResult) {
                     $result = [
@@ -57,35 +58,41 @@ class ContestRunCommand extends Command {
                 }
                 $profile = 'Nenhum';
             } elseif ($profile) {
-                
+                $fprofile = ContestTesterAbstract::getProfileDir() . $profile . '.profile';
+                if (($rules = file($fprofile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)) === false) {
+                    throw new Exception("Falha ao tentar abrir o perfil $profile de $fprofile");
+                }
+                foreach ($rules as $rule) {
+                    $result[$rule] = $tester->run($rule);
+                }
             } else {
                 throw new Exception('É necessário informar uma regra (--rule=nome_da_regra) ou perfil (--profile=nome_do_perfil).');
             }
             /* mostra o resultado na tela */
 //            print_r($result);
-            $io->success("Resultado do processamento par ao perfil: $profile");
+            $io->success("Resultado do processamento do perfil: $profile");
             $totRules = 0;
             $totFails = 0;
-            foreach ($result as $rule => $test){
+            foreach ($result as $rule => $test) {
                 $totRules++;
                 $fail = false;
-                foreach ($test['total'] as $total){
-                    if($total['diference'] <> 0){
+                foreach ($test['total'] as $total) {
+                    if ($total['diference'] <> 0) {
                         $fail = true;
                         $totFails++;
                     }
                 }
-                
-                if($fail){
+
+                if ($fail) {
                     $io->error("Regra $rule falhou!");
-                }else{
+                } else {
                     $io->success("Regra $rule passou!");
                 }
             }
-            
+
             $io->note("Total de regras processadas: $totRules");
             $io->note("Total de regras com falha: $totFails");
-            
+
             /* salva o relatório se for o caso */
             if ($report) {
                 $io->note('Montando o relatório...');
