@@ -4,6 +4,8 @@ use App\Command\CalcProgOrcCommand;
 use App\Command\ContestNewProfileCommand;
 use App\Command\ContestNewRuleCommand;
 use App\Command\ContestRunCommand;
+use App\Command\ContestShowProfilesCommand;
+use App\Command\ContestShowRulesCommand;
 use App\Command\PadConvertCommand;
 use App\Command\PadSplitCommand;
 use App\Command\PessoalDotacaoCommand;
@@ -22,7 +24,9 @@ $application->addCommands([
     new PessoalDotacaoCommand(),
     new ContestNewRuleCommand(),
     new ContestNewProfileCommand(),
-    new ContestRunCommand()
+    new ContestRunCommand(),
+    new ContestShowProfilesCommand(),
+    new ContestShowRulesCommand()
 ]);
 
 $application->run();
