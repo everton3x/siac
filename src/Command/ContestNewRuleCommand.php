@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Contest\ContestTesterAbstract;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,7 +27,7 @@ class ContestNewRuleCommand extends Command {
             
             /* processa argumentos e opções */
             $rule = $input->getArgument('rule');
-            $rulePath = 'contest/rules/';
+            $rulePath = ContestTesterAbstract::getRuleDir();
             $frule = "$rulePath$rule.ini";
             
             /* verifica se o arquivo de regra já existe */

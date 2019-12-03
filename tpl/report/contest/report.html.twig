@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {#        <title>Avaliação da Programação Orçamentária e Financeira</title>#}
+        <link rel="stylesheet" type="text/css" href="vendor/semantic/ui/dist/semantic.min.css">
+    </head>
+    <body>
+        <div class="ui container">
+            <div class="ui medium header">
+                Teste de Consistência Contábil
+                <div class="ui sub header">Data-base: {{ dataBase|date("d/m/Y") }}</div>
+                <div class="ui sub header">Perfil: {{ perfil }}</div>
+            </div>
+            <div class="ui small header">Entidades incluídas</div>
+            <div class="ui list">
+                {% for entidade in entidades %}
+                    <div class="item">{{ entidade }}</div>
+                {% endfor %}
+            </div>
+
+            {% for regra in resultado %}
+                <div class="ui medium header">
+                    {{ regra.title }} ({{ regra.name }})
+                    <div class="ui sub header">{{ regra.description }}</div>
+                </div>
+                <table class="ui celled striped table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center">Item</th>
+                            <th style="text-align: center">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in regra.total %}
+                            {%  for valor in item.value %}
+                                <tr>
+                                    <td>{{ valor.sql }}</td>
+                                    <td style="text-align: right">{{ valor.value|number_format(2, ',', '.') }}</td>
+                                </tr>
+                            {%  endfor %}
+                            <tr class="active">
+                                <td>Total</td>
+                                <td style="text-align: right">{{ item.total|number_format(2, ',', '.') }}</td>
+                            </tr>
+
+                            {% if item.diference != 0 %}
+                                <tr class="error">
+                                    <td>Diferença</td>
+                                    <td style="text-align: right">{{ item.diference|number_format(2, ',', '.') }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+
+        </div>
+    </body>
+</html>

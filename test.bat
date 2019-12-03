@@ -17,7 +17,7 @@ rem php .\siac.php vale-alim:calc "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db"
 rem php .\siac.php pessoal:dotacao "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db"
 rem php .\siac.php pessoal:dotacao "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --report="C:\Users\everton.INDEPENDENCIA\Desktop\folha.pdf"
 
-php .\siac.php contest:new-rule rteste
-rem php .\siac.php contest:run "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --rule=rteste
-rem php .\siac.php contest:new-profile pteste
+rem php .\siac.php contest:new-rule rteste
+rem php .\siac.php contest:run "C:\Users\everton.INDEPENDENCIA\Desktop\siac.db" --rule=contas-patrimoniais --report="C:\Users\everton.INDEPENDENCIA\Desktop\contest.pdf"
+php .\siac.php contest:new-profile mun
 rem php .\siac.php contest:run "C:\Users\everton.INDEPENDENCIA\Desktop\pm.db" --profile=pteste
