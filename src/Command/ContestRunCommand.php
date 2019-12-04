@@ -64,7 +64,10 @@ class ContestRunCommand extends Command {
                 }
                 foreach ($rules as $rule) {
                     if (substr($rule, 0, 1) !== ';') {
-                        $result[$rule] = $tester->run($rule);
+                        $testResult = $tester->run($rule);
+                        if($testResult){
+                            $result[$rule] = $testResult;
+                        }
                     }
                 }
             } else {

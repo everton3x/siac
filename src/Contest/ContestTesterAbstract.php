@@ -14,7 +14,6 @@ use PDO;
 abstract class ContestTesterAbstract {
 
     protected $pdo = null;
-    
     protected $dataBase = null;
 
     abstract public function run(string $rule): array;
@@ -23,7 +22,7 @@ abstract class ContestTesterAbstract {
         try {
             $this->pdo = new PDO("sqlite:$db");
             $stmt = $this->pdo->query("SELECT data_final FROM meta GROUP BY data_final");
-            foreach($stmt as $row){
+            foreach ($stmt as $row) {
                 $this->dataBase = date_create_from_format('Y-m-d', $row['data_final']);
                 break;
             }
@@ -51,13 +50,14 @@ abstract class ContestTesterAbstract {
 
         return $data;
     }
-    
+
     protected function valorize(string $sql): float {
-        try{
-            $ano = $this->dataBase->format('Y');
+        try {
+//            $ano = $this->dataBase->format('Y');
+//            $sql = str_replace('$ano', $ano, $sql);
             $stmt = $this->pdo->query($sql);
             $result = 0.0;
-            foreach ($stmt as $row){
+            foreach ($stmt as $row) {
                 $result += $row['valor'];
             }
             return $result;
@@ -65,22 +65,27 @@ abstract class ContestTesterAbstract {
             throw $ex;
         }
     }
-    
+
+    protected function prepareSQL(string $sql): string {
+        $ano = $this->dataBase->format('Y');
+        return str_replace('$ano', $ano, $sql);
+    }
+
     public function getDataBase(): DateTime {
         return $this->dataBase;
     }
-    
+
     public function getEntidades(): array {
-        try{
-            if(($config = parse_ini_file('pad-split.ini', true)) === false){
+        try {
+            if (($config = parse_ini_file('pad-split.ini', true)) === false) {
                 throw new Exception("Falha ao carregar configurações de pad-split.ini");
             }
-            
+
             $entidades = [];
-            
+
             $stmt = $this->pdo->query('SELECT uniorcam FROM bal_ver GROUP BY uniorcam');
-            foreach ($stmt as $row){
-                switch ($row['uniorcam']){
+            foreach ($stmt as $row) {
+                switch ($row['uniorcam']) {
                     case $config['UniOrcamEntidades']['cm']:
                         $entidades[$config['CnpjEntidades']['cm']] = 'Câmara de Vereadores';
                         break;
@@ -96,14 +101,14 @@ abstract class ContestTesterAbstract {
             throw $ex;
         }
     }
-    
+
     public static function getRules(): array {
-        try{
+        try {
             $result = [];
             $it = new \DirectoryIterator(self::getRuleDir());
-            foreach ($it as $item){
+            foreach ($it as $item) {
 //                echo $item->getPathname(), PHP_EOL;
-                if($item->isFile()){
+                if ($item->isFile()) {
                     $result[] = $item->getBasename(".{$item->getExtension()}");
                 }
             }
@@ -112,14 +117,14 @@ abstract class ContestTesterAbstract {
             throw $ex;
         }
     }
-    
+
     public static function getProfiles(): array {
-        try{
+        try {
             $result = [];
             $it = new \DirectoryIterator(self::getProfileDir());
-            foreach ($it as $item){
+            foreach ($it as $item) {
 //                echo $item->getPathname(), PHP_EOL;
-                if($item->isFile()){
+                if ($item->isFile()) {
                     $result[] = $item->getBasename(".{$item->getExtension()}");
                 }
             }
