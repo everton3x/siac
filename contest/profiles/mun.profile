@@ -85,6 +85,10 @@ reestimativa-receita
 retencoes-a-pagar
 rp-nao-processado-a-liquidar
 rp-nao-processados-a-pagar
-rp-processado-a-pagar
+rp-nao-processados-inscritos-exercicio
+rp-nao-processados-inscritos
+rp-pagos
 rp-processados-a-pagar
+rp-processados-inscritos-exercicio
+rp-processados-inscritos
 superavit-utilizado
