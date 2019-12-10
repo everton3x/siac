@@ -65,7 +65,7 @@ class ContestRunCommand extends Command {
                 foreach ($rules as $rule) {
                     if (substr($rule, 0, 1) !== ';') {
                         $testResult = $tester->run($rule);
-                        if($testResult){
+                        if ($testResult) {
                             $result[$rule] = $testResult;
                         }
                     }
@@ -78,13 +78,18 @@ class ContestRunCommand extends Command {
             $io->success("Resultado do processamento do perfil: $profile");
             $totRules = 0;
             $totFails = 0;
+            $rulesFail = [];
+//            print_r($result); exit();
             foreach ($result as $rule => $test) {
                 $totRules++;
                 $fail = false;
                 foreach ($test['total'] as $total) {
                     if ($total['diference'] <> 0) {
-                        $fail = true;
-                        $totFails++;
+                        if (!$fail) {
+                            $rulesFail[] = $test['name'];
+                            $fail = true;
+                            $totFails++;
+                        }
                     }
                 }
 
@@ -96,7 +101,11 @@ class ContestRunCommand extends Command {
             }
 
             $io->note("Total de regras processadas: $totRules");
-            $io->note("Total de regras com falha: $totFails");
+            $io->note("Total de regras com falha: $totFails:");
+            foreach ($rulesFail as $failon) {
+                $io->writeln($failon);
+            }
+
 
             /* salva o relatório se for o caso */
             if ($report) {
