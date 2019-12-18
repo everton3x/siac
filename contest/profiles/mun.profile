@@ -92,3 +92,6 @@ rp-processados-a-pagar
 rp-processados-inscritos-exercicio
 rp-processados-inscritos
 superavit-utilizado
+nat-info-contr
+nat-info-orc
+nat-info-patrim

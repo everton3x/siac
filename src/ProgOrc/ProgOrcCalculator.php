@@ -26,7 +26,6 @@ class ProgOrcCalculator {
      * @var Array Resultado da valiação
      */
     protected $result = [];
-    
     protected $io = null;
 
     /**
@@ -51,7 +50,7 @@ class ProgOrcCalculator {
         try {
             $vinculos = $this->getVinculos();
 //            print_r($vinculos);exit();
-            
+
             ProgressBar::setFormatDefinition('custom', '<info>%message%</info> [%bar%] %percent:3s%% [%current% / %max%]');
             $progress = $this->io->createProgressBar(count($vinculos));
             $progress->setBarCharacter('|');
@@ -64,7 +63,7 @@ class ProgOrcCalculator {
 
             foreach ($vinculos as $row) {
                 $progress->setMessage("Recurso {$row['cod']}: ");
-            $result = $this->calc((int) $row['cod']);
+                $result = $this->calc((int) $row['cod']);
                 if ($this->check($result)) {
                     $this->result[] = $result;
                 }
@@ -123,7 +122,23 @@ class ProgOrcCalculator {
      * @return int
      */
     protected function getBimestre(int $mes): int {
-        return intval($mes / 2);
+
+        $bim = [
+            1 => 1,
+            2 => 1,
+            3 => 2,
+            4 => 2,
+            5 => 3,
+            6 => 3,
+            7 => 4,
+            8 => 4,
+            9 => 5,
+            10 => 5,
+            11 => 6,
+            12 => 6,
+        ];
+
+        return $bim[$mes];
     }
 
     /**
@@ -304,70 +319,132 @@ class ProgOrcCalculator {
     protected function getAArrecadar(int $rv): float {
         try {
             $result = 0.0;
-            $mes = $this->getMes($this->getDataBase());
-            $bimestre = $this->getBimestre($mes);
-            $meses = [
-                1 => 'janeiro',
-                2 => 'fevereiro',
-                3 => 'marco',
-                4 => 'abril',
-                5 => 'maio',
-                6 => 'junho',
-                7 => 'julho',
-                8 => 'agosto',
-                9 => 'setembro',
-                10 => 'outubro',
-                11 => 'novembro',
-                12 => 'dezembro',
-            ];
+            $atualizada = 0.0;
+            $arrecadada = 0.0;
+            $areceber = 0.0;
 
-            /* soma as metas de arrecadação dos bimestres seguintes ao mês de referência */
-            $bimAtual = $this->getBimestre($mes);
-            for ($bimAtual++; $bimAtual <= 6; $bimAtual++) {
-                $sql = "SELECT SUM(meta{$bimAtual}bim) AS valor FROM receita WHERE rv = $rv";
-                $calc = $this->pdo->query($sql);
-                foreach ($calc as $row) {
-                    $result += (float) $row['valor'];
-                }
+            $sql = "SELECT SUM(atualizada) AS valor FROM bal_rec WHERE rv = $rv AND tipo_nivel LIKE 'A'";
+            $calc = $this->pdo->query($sql);
+            foreach ($calc as $row) {
+                $atualizada += (float) $row['valor'];
             }
 
-            /* soma o valor a arrecadar do bimestre atual, se houver */
-            if (($mes % 2) != 0) {
-                $arrecadacaoMesAtual = 0.0;
-                //pega a arrecadação do mês atual
-                $sql = "SELECT SUM($mes) AS valor FROM receita WHERE rv = $rv";
-                $calc = $this->pdo->query($sql);
-                foreach ($calc as $row) {
-                    $arrecadacaoMesAtual += (float) $row['valor'];
-                }
-
-                //pega a meta de arrecadação do bimestre atual
-                $metaBimAtual = 0.0;
-                $sql = "SELECT SUM(meta{$this->getBimestre($mes)}bim) AS valor FROM receita WHERE rv = $rv";
-                $calc = $this->pdo->query($sql);
-                foreach ($calc as $row) {
-                    $metaBimAtual += (float) $row['valor'];
-                }
-
-                //soma apenas se a ainda tiver meta a arrecadar
-                if ($metaBimAtual > $arrecadacaoMesAtual) {
-                    $result += $metaBimAtual - $arrecadacaoMesAtual;
-                }
-
+            $sql = "SELECT SUM(realizada) AS valor FROM bal_rec WHERE rv = $rv AND tipo_nivel LIKE 'A'";
+            $calc = $this->pdo->query($sql);
+            foreach ($calc as $row) {
+                $arrecadada += (float) $row['valor'];
             }
+
             //soma as transferências a receber
             $rvStr = str_pad($rv, 4, '0', STR_PAD_LEFT);
             $sql = "SELECT SUM(saldo_final_debito) AS valor FROM bal_ver WHERE conta LIKE '%RV$rvStr%' AND conta_contabil_f LIKE '1.1.2.3.%' AND escrituracao IN('S', 's')";
             $calc = $this->pdo->query($sql);
             foreach ($calc as $row) {
-                $result += (float) $row['valor'];
+                $areceber += (float) $row['valor'];
             }
+
+            if ($atualizada < $arrecadada) {
+                $atualizada = $arrecadada + $this->getAArrecadarPelaMeta($rv);
+            }
+            $result = $atualizada - $arrecadada + $areceber;
+            if ($result < 0) {
+                $result = 0.0;
+            }
+
+            return $result;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    protected function getAArrecadarPelaMeta(int $rv): float {
+        try {
+            $result = 0.0;
+            $mes = $this->getMes($this->getDataBase());
+
+            for ($mes++; $mes <= 12; $mes++) {
+                $bimestre = $this->getBimestre($mes);
+                $sql = "SELECT SUM(meta{$bimestre}bim) AS valor FROM receita WHERE rv = $rv";
+                $calc = $this->pdo->query($sql);
+                foreach ($calc as $row) {
+                    $result += (float) round($row['valor'] / 2, 2);
+                }
+            }
+
         } catch (Exception $ex) {
             throw $ex;
         }
 
         return $result;
     }
+
+//    protected function getAArrecadar(int $rv): float {
+//        try {
+//            $result = 0.0;
+//            $mes = $this->getMes($this->getDataBase());
+//            $bimestre = $this->getBimestre($mes);
+//            $meses = [
+//                1 => 'janeiro',
+//                2 => 'fevereiro',
+//                3 => 'marco',
+//                4 => 'abril',
+//                5 => 'maio',
+//                6 => 'junho',
+//                7 => 'julho',
+//                8 => 'agosto',
+//                9 => 'setembro',
+//                10 => 'outubro',
+//                11 => 'novembro',
+//                12 => 'dezembro',
+//            ];
+//
+//            /* soma as metas de arrecadação dos bimestres seguintes ao mês de referência */
+//            $bimAtual = $this->getBimestre($mes);
+//            for ($bimAtual++; $bimAtual <= 6; $bimAtual++) {
+//                $sql = "SELECT SUM(meta{$bimAtual}bim) AS valor FROM receita WHERE rv = $rv";
+//                $calc = $this->pdo->query($sql);
+//                foreach ($calc as $row) {
+//                    $result += (float) $row['valor'];
+//                }
+//            }
+//
+//            /* soma o valor a arrecadar do bimestre atual, se houver */
+//            if (($mes % 2) != 0) {
+//                $arrecadacaoMesAtual = 0.0;
+//                //pega a arrecadação do mês atual
+//                $sql = "SELECT SUM($mes) AS valor FROM receita WHERE rv = $rv";
+//                $calc = $this->pdo->query($sql);
+//                foreach ($calc as $row) {
+//                    $arrecadacaoMesAtual += (float) $row['valor'];
+//                }
+//
+//                //pega a meta de arrecadação do bimestre atual
+//                $metaBimAtual = 0.0;
+//                $sql = "SELECT SUM(meta{$this->getBimestre($mes)}bim) AS valor FROM receita WHERE rv = $rv";
+//                $calc = $this->pdo->query($sql);
+//                foreach ($calc as $row) {
+//                    $metaBimAtual += (float) $row['valor'];
+//                }
+//
+//                //soma apenas se a ainda tiver meta a arrecadar
+//                if ($metaBimAtual > $arrecadacaoMesAtual) {
+//                    $result += $metaBimAtual - $arrecadacaoMesAtual;
+//                }
+//
+//            }
+//            //soma as transferências a receber
+//            $rvStr = str_pad($rv, 4, '0', STR_PAD_LEFT);
+//            $sql = "SELECT SUM(saldo_final_debito) AS valor FROM bal_ver WHERE conta LIKE '%RV$rvStr%' AND conta_contabil_f LIKE '1.1.2.3.%' AND escrituracao IN('S', 's')";
+//            $calc = $this->pdo->query($sql);
+//            foreach ($calc as $row) {
+//                $result += (float) $row['valor'];
+//            }
+//        } catch (Exception $ex) {
+//            throw $ex;
+//        }
+//
+//        return $result;
+//    }
 
     protected function getSaldoFinanceiro(int $rv): float {
         try {
@@ -412,8 +489,8 @@ class ProgOrcCalculator {
     protected function getVinculos(): array {
         try {
             $stmt = $this->pdo->query("SELECT * FROM recurso GROUP BY cod, nome, finalidade ORDER BY cod ASC");
-            $vinculos = [];//necessário converter para array porque PDOStatement::rowCount() não funciona com o SQLite.
-            foreach ($stmt->fetchAll() as $row){
+            $vinculos = []; //necessário converter para array porque PDOStatement::rowCount() não funciona com o SQLite.
+            foreach ($stmt->fetchAll() as $row) {
                 $vinculos[] = $row;
             }
             return $vinculos;
