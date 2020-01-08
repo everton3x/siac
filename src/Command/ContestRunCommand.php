@@ -130,7 +130,7 @@ class ContestRunCommand extends Command {
                 $mpdf = new Mpdf([
                     'format' => 'A4-L'
                 ]);
-                $mpdf->SetFooter(sprintf('Gerado em %s|SIAC|{PAGENO}', date('d/m/Y, às H:i:s')));
+                $mpdf->SetFooter(sprintf('Gerado em %s|SIAC|{PAGENO}', date('d/m/Y, à\s H:i:s')));
                 $mpdf->WriteHTML(file_get_contents('vendor/semantic/ui/dist/semantic.css'), HTMLParserMode::HEADER_CSS);
                 $mpdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
                 $mpdf->Output($report, Destination::FILE);
